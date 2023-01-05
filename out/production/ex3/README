@@ -1,0 +1,86 @@
+zgreds
+332521004
+
+BrickerGameManager runs the game. It creates instances of each GameObject and adds them to the game. It's in charge
+of resetting the ball and checking if the game is over. We run the game from its main.
+
+Each GameObject has different usages. We override some of their methods to ensure that they each run as intended. For
+example, Paddle's update method makes the paddle react to input received from the user.
+
+When we create each Brick instance in the game, we equip it with a brick strategy. This strategy is chosen from the
+BrickStrategyFactory and is activated when the brick is hit.
+
+BallCollisionCountdownAgent is used to keep track of how many objects the ball has hit since this object was created.
+We use this for BrickStrategies which are only active for a certain number of hits.
+
+The two different life counters keep track of the remaining lives in the game by using the global life counter. The
+numeric counter displays the lives with a number, whereas the graphic counter displays a heart for each remaining life.
+The graphic counter is an "empty" object. The actual object doesn't display anything, but holds an array of new objects
+which are the hearts.
+
+
+When a brick is hit we must apply the RemoveBrickStrategy as well as activating its other strategies.
+To be able to apply multiple strategies, we created RemoveBrickStrategyDecorator. This decorator holds a strategy which
+is applied in update. When creating a new strategy, we create it with a decorated RemoveBrickStrategy. Then in the new
+strategy's update we call its super's update which in turn applies the decorated strategy.
+This way, we can wrap as many strategies as we'd like, and can equip one brick with multiple strategies.
+
+RemoveBrickStrategy and RemoveBrickStrategyDecorator both implement CollisionStrategy to ensure that they support the
+proper functions. While the other strategies extend the Decorator to ensure that the decorated strategy is applied
+whenever needed.
+
+When creating a brick we must choose its strategy. In order to easily be able to choose and add new strategies, we
+created a new class which randomly selects the strategy for us. Our BrickStrategyFactory chooses which
+strategy/strategies and equips the brick with it. We created it in a way that if the double strategy was chosen, we'll
+equip the brick with two strategies. We can do this up to three strategies per brick.
+
+alotStudyTimes:
+Proof:
+We sort the tasks and slots. If the longest (remaining) task fits in the longest (remaining) slot, then we'll put it
+there as that's the ideal task for the slot (placing a smaller task in this slot will waste time and then we may not be
+able to place the larger one in a different slot). If the longest slot doesn't hold the longest task, then no slot will
+hold this task, and we can discard the task. By continuing this until there are no slots or tasks remaining, we're
+guaranteed to have put the maximum number of tasks in possible slots.
+Time Complexity:
+Length of tasks - m
+Length of slots - n
+Sort each one - O(mlogm + nlogn)
+Iterate through each list until one reaches end - O(m + n)
+In total: O(mlogm + nlogn)
+
+bucketWalk:
+Proof:
+For every number i until 'n', we could've gotten there by filling one liter or two liters at once (from i-1 or i-2).
+This means we could've filled the well in [i-1] different ways (and then adding one) or['i-2] different ways (and then
+adding 2). In total that is [i-1]+[i-2] different ways.
+To save space, we only save the two previous numbers instead of a whole array, as these are all that is needed.
+Time Complexity:
+We loop through n number thus our total complexity is O(n).
+
+numTrees:
+Proof:
+For each number i we calculate the number of trees with i as the root. Since it is a BST 1...i-1] numbers will be in the
+left subtree and [i+1...n] numbers will be in the right subtree. So we use the dynamic array to find how many unique
+trees there are with 'i-1' nodes and 'n-i' nodes. Multiplying them together will give us the total unique trees with 'i'
+as the root. We add this number to the total and repeat for each value until n. By the end we'll get the total number of
+unique BSTs.
+Time Complexity:
+We run through all numbers i until n and then all numbers until i.
+We get (1)*(2)*...*(n-3)*(n-2)*(n-1)*(n). This is an arithmetic sequence with its sum being (n*(1+n))/2 = (n+n^2)/2
+In total this is O(n^2)
+
+minLeap:
+Proof:
+Starting from the end we check for the minimal number of jumps it will take to the end, from all the lily pads that it
+is possible to get to from the current pad. Because we start from the end and the fact that the frog can't jump
+backwards, we're guaranteed to have the number of jumps it will take from the necessary lily pads. Continuing in this
+fashion, the number of jumps it takes from the first pad is our answer.
+Time Complexity:
+In the worst case we'll get that for each leaf we'll have to check for the minimal on all the leaves after the current
+one. Again we get (1)*(2)*...*(n-3)*(n-2)*(n-1)*(n) = O(n^2)
+
+PaddleLengthStrategy floats an "extend paddle" power-up 1/4 times and a "narrow paddle" power-up 3/4 times. This is to
+make the game a little more difficult. It also limits hos small/big the paddle can get so the paddle won't get to
+outrageous sizes.
+
+
